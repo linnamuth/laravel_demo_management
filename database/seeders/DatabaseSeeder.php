@@ -17,6 +17,10 @@ class DatabaseSeeder extends Seeder
      * List of applications to add.
      */
     private $permissions = [
+        'user-list',
+        'user-create',
+        'user-edit',
+        'user-delete',
         'role-list',
         'role-create',
         'role-edit',
@@ -24,7 +28,24 @@ class DatabaseSeeder extends Seeder
         'product-list',
         'product-create',
         'product-edit',
-        'product-delete'
+        'product-delete',
+        'leave-list',
+        'leave-create',
+        'leave-edit',
+        'leave-delete',
+        'mission-list',
+        'mission-create',
+        'mission-edit',
+        'mission-delete',
+        'department-list',
+        'department-create',
+        'department-edit',
+        'department-delete',
+        'leave_reject',
+        'leave_approve',
+        'mission_reject',
+        'mission_approve',
+        
     ];
 
 
@@ -39,8 +60,8 @@ class DatabaseSeeder extends Seeder
 
         // Create admin User and assign the role to him.
         $user = User::create([
-            'name' => 'Prevail Ejimadu',
-            'email' => 'test@example.com',
+            'name' => 'Linna Muth',
+            'email' => 'linna@example.com',
             'password' => Hash::make('password')
         ]);
 

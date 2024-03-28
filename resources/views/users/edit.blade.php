@@ -27,8 +27,9 @@
     @endif
 
 
-    <form action="{{ route('users.update', $user->id) }}" method="PATCH">
+    <form action="{{ route('users.update', $user->id) }}" method="POST">
         @csrf
+        @method('PUT')
         <div class="row">
             <div class="col-xs-12 mb-3">
                 <div class="form-group">
@@ -58,6 +59,20 @@
                         placeholder="Confirm Password">
                 </div>
             </div>
+            <div class="col-xs-12 mb-3">
+                <div class="form-group">
+                    <strong>Department:</strong>
+                    <select name="department_id" class="form-control">
+                        <option value="">Select Department</option>
+                        @foreach($departments as $department)
+                            <option value="{{ $department->id }}" {{ $user->department_id == $department->id ? 'selected' : '' }}>
+                                {{ $department->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            
             <div class="col-xs-12 mb-3">
                 <div class="form-group">
                     <strong>Role:</strong>
