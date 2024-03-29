@@ -12,13 +12,13 @@ use Spatie\Permission\Models\Permission;
 class RoleController extends Controller
 {
 
-    function __construct()
-    {
-        $this->middleware(['permission:role-list|role-create|role-edit|role-delete'], ['only' => ['index', 'store']]);
-        $this->middleware(['permission:role-create'], ['only' => ['create', 'store']]);
-        $this->middleware(['permission:role-edit'], ['only' => ['edit', 'update']]);
-        $this->middleware(['permission:role-delete'], ['only' => ['destroy']]);
-    }
+    // function __construct()
+    // {
+    //     $this->middleware(['permission:role-list|role-create|role-edit|role-delete'], ['only' => ['index', 'store']]);
+    //     $this->middleware(['permission:role-create'], ['only' => ['create', 'store']]);
+    //     $this->middleware(['permission:role-edit'], ['only' => ['edit', 'update']]);
+    //     $this->middleware(['permission:role-delete'], ['only' => ['destroy']]);
+    // }
 
     public function index(Request $request)
     {
@@ -31,19 +31,21 @@ class RoleController extends Controller
         $permission = Permission::get();
         return view('roles.create', compact('permission'));
     }
-
     public function store(Request $request)
     {
         $this->validate($request, [
             'name' => 'required|unique:roles,name',
-            'permission' => 'required',
+            'permission' => 'required|array',
+            'permission.*' => 'exists:permissions,id' // Validate that each permission exists in the "permissions" table
         ]);
-
+    
         $role = Role::create(['name' => $request->input('name')]);
-        $role->syncPermissions($request->input('permission'));
-
-        return redirect()->route('roles.index')
-            ->with('success', 'Role created successfully');
+    
+        $permissions = Permission::whereIn('id', $request->input('permission'))->get();
+    
+        $role->syncPermissions($permissions);
+    
+        return redirect()->route('roles.index')->with('success', 'Role created successfully');
     }
 
     public function show($id)

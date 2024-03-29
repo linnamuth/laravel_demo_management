@@ -52,7 +52,10 @@ Route::middleware('auth')->group(function () {
     
     // Route to display leave requests
     Route::get('leave-requests', [LeaveRequestController::class, 'index'])->name('leave-requests.index');
-    Route::get('leave-mission/status', [StatusRequestController::class, 'status'])->name('leave-mission.status');
+    Route::get('leave-request/status', [StatusRequestController::class, 'status'])->name('leave-mission.status');
+
+    Route::get('mission-request/status', [StatusRequestController::class, 'statusMissionRequest'])->name('mission-leave.status');
+
 
     Route::post('/leave-requests/{id}/approve', [LeaveRequestController::class, 'approves'])->name('leave-requests.approve');
     Route::post('/leave-requests/{id}/reject',  [LeaveRequestController::class, 'reject'])->name('leave-requests.reject');
@@ -92,7 +95,7 @@ Route::get('users', [UserController::class, 'index'])->name('users.index');
 Route::get('users/create', [UserController::class, 'create'])->name('users.create');
 Route::post('users', [UserController::class, 'store'])->name('users.store');
 Route::put('users/update/{id}', [UserController::class, 'update'])->name('users.update');
-
+Route::delete('/users/{id}',[UserController::class, 'destroy'])->name('users.destroy');
 
 // Routes for admin functionalities
 Route::get('admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');

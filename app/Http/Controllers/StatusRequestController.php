@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\LeaveStatus;
+use App\Models\MissionLeave;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -11,7 +12,16 @@ class StatusRequestController extends Controller
     public function status()
     {
         $user = Auth::user();
-        $leaveMissions = LeaveStatus::where('user_id', $user->id)->get();
-        return view('leaves.checkStatus', compact('leaveMissions'));
+        $leaveRequests = LeaveStatus::get();
+
+        return view('leaves.checkStatus', compact('leaveRequests'));
+    }
+
+    public function statusMissionRequest()
+    {
+        $user = Auth::user();
+        $missionRequests = MissionLeave::get();
+
+        return view('missions.checkMissionRequest', compact('missionRequests'));
     }
 }

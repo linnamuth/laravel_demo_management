@@ -13,13 +13,13 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    function __construct()
-    {
-        $this->middleware(['permission:user-list|user-create|user-edit|user-delete'], ['only' => ['index', 'show']]);
-        $this->middleware(['permission:user-create'], ['only' => ['create', 'store']]);
-        $this->middleware(['permission:user-edit'], ['only' => ['edit', 'update']]);
-        $this->middleware(['permission:user-delete'], ['only' => ['destroy']]);
-    }
+    // function __construct()
+    // {
+    //     $this->middleware(['permission:user-list|user-create|user-edit|user-delete'], ['only' => ['index', 'show']]);
+    //     $this->middleware(['permission:user-create'], ['only' => ['create', 'store']]);
+    //     $this->middleware(['permission:user-edit'], ['only' => ['edit', 'update']]);
+    //     $this->middleware(['permission:user-delete'], ['only' => ['destroy']]);
+    // }
     public function index(Request $request)
     {
         $data = User::latest()->paginate(5);
@@ -29,11 +29,12 @@ class UserController extends Controller
 
     public function create()
     {
-        $roles = Role::pluck('name','name')->all();
+        $roles = Role::get();
         $departments = Department::all();
-
-        return view('users.create',compact('roles','departments'));
+    
+        return view('users.create', compact('roles', 'departments'));
     }
+    
     
 
     public function store(Request $request)
@@ -41,21 +42,25 @@ class UserController extends Controller
         $this->validate($request, [
             'name' => 'required',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|same:confirm-password',
-            'roles' => 'required',
+            'password' => 'required|same:confirm_password',
+            'role_id' => 'required',
             'department_id' => 'required'
         ]);
     
         $input = $request->all();
         $input['password'] = Hash::make($input['password']);
     
-        $user = User::create($input);
-        $user->assignRole($request->input('roles'));
-
+        $role = Role::find($request->input('role_id')); // Find the role by ID
+        if (!$role) {
+            return redirect()->route('users.create')->with('error', 'Invalid role selected');
+        }
     
-        return redirect()->route('users.index')
-                        ->with('success','User created successfully');
+        $user = User::create($input);
+        $user->assignRole($role); 
+    
+        return redirect()->route('users.index')->with('success', 'User created successfully');
     }
+    
     
     public function show($id)
     {
@@ -67,7 +72,7 @@ class UserController extends Controller
     public function edit($id)
     {
         $user = User::find($id);
-        $roles = Role::pluck('name','name')->all();
+        $roles = Role::get();
         $userRole = $user->roles->pluck('name','name')->all();
         $departments = Department::all();
 

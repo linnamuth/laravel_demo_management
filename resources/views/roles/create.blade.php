@@ -3,12 +3,14 @@
 @section('content')
     <div class="row">
         <div class="col-lg-12 margin-tb mb-4">
-            <div class="pull-left">
-                <h2>Create New Role
-                    <div class="float-end">
-                        <a class="btn btn-primary" href="{{ route('roles.index') }}"> Back</a>
-                    </div>
-                </h2>
+            <div class="pull-left d-flex justify-content-between">
+                <h4>Create New Role
+                </h4>
+                <div class="pull-right">
+                    <a class="btn btn-primary" href="{{ route('users.index') }}" style="background-color: #007bff; color: #fff; border-color: #007bff; padding: 8px 20px; border-radius: 5px; text-decoration: none;">
+                        Back
+                    </a>
+                </div>
             </div>
         </div>
     </div>

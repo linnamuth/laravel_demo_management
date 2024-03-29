@@ -8,19 +8,25 @@ use Illuminate\Support\Facades\Auth;
 
 class LeaveRequestController extends Controller
 {
-    function __construct()
-    {
-        $this->middleware(['permission:leave-list|leave-create|leave-edit|leave-delete'], ['only' => ['index', 'show']]);
-        $this->middleware(['permission:leave-create'], ['only' => ['create', 'store']]);
-        $this->middleware(['permission:leave-edit'], ['only' => ['edit', 'update']]);
-        $this->middleware(['permission:leave-delete'], ['only' => ['destroy']]);
-    }
+    // function __construct()
+    // {
+    //     $this->middleware(['permission:leave-list|leave-create|leave-edit|leave-delete'], ['only' => ['index', 'show']]);
+    //     $this->middleware(['permission:leave-create'], ['only' => ['create', 'store']]);
+    //     $this->middleware(['permission:leave-edit'], ['only' => ['edit', 'update']]);
+    //     $this->middleware(['permission:leave-delete'], ['only' => ['destroy']]);
+    // }
     public function index()
     {
-        $leaveRequests = LeaveRequest::latest()->paginate(50);
+        $isAdmin = Auth::user()->isAdmin();
+    
+        if ($isAdmin) {
+            $leaveRequests = LeaveRequest::latest()->paginate(50);
+        } else {
+            $leaveRequests = LeaveRequest::where('user_id', Auth::id())->latest()->paginate(50);
+        }
+    
         return view('leaves.index', compact('leaveRequests'));
     }
-
     public function create()
     {
         return view('leaves.create');
@@ -35,8 +41,10 @@ class LeaveRequestController extends Controller
             'reason' => 'required|string',
             'days' => 'nullable|in:morning,afternoon,day', // Validate the duration field
         ]);
-    
-    
+
+        // Get the ID of the authenticated user
+        $user_id = Auth::id();
+
         LeaveRequest::create([
             'type' => $request->type,
             'start_date' => $request->start_date,
@@ -44,25 +52,23 @@ class LeaveRequestController extends Controller
             'reason' => $request->reason,
             'duration' => $request->duration,
             'days' => $request->days, // Assign the duration value
+            'user_id' => $user_id, // Assign the user_id of the authenticated user
         ]);
-    
+
         return redirect()->route('leave-requests.index')->with('success', 'Leave request submitted successfully.');
     }
-    
     public function approves($id)
-{
-    $request = LeaveRequest::findOrFail($id);
-    $request->update(['status' => 'approved']);
-    // You can add additional logic here
-    return redirect()->back()->with('success', 'Request approved successfully.');
-}
+    {
+        $request = LeaveRequest::findOrFail($id);
+        $request->update(['status' => 'approved']);
+        return redirect()->back()->with('success', 'Request approved successfully.');
+    }
 
-public function reject($id)
-{
-    $request = LeaveRequest::findOrFail($id);
-    $request->update(['status' => 'rejected']);
-    // You can add additional logic here
-    return redirect()->back()->with('success', 'Request rejected successfully.');
-}
+    public function reject($id)
+    {
+        $request = LeaveRequest::findOrFail($id);
+        $request->update(['status' => 'rejected']);
+        return redirect()->back()->with('success', 'Request rejected successfully.');
+    }
 
 }

@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="container">
-    <h1>Create Department</h1>
+    <h4>Create Department</h4>
     <form method="POST" action="{{ route('departments.store') }}">
         @csrf
         <div class="form-group">

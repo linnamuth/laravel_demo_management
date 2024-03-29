@@ -1,66 +1,99 @@
-
 @extends('layouts.master')
 
 @section('content')
-<div class="row">
-    <div class="col-lg-12 margin-tb mb-4">
-        <div class="pull-left">
-            <h2>Users Management                
-      
-        <div class="float-end">
-          @can('user-create')
-          <a class="btn btn-success" href="{{ route('users.create') }}"> Create New User</a>
-          @endcan
-        </div>
-            </h2>
+    <div class="row">
+        <div class="col-lg-12 margin-tb mb-4">
+            <div class="pull-left">
+                <h4>Users Management
+
+                    <div class="float-end">
+                        @can('user-create')
+                            <a class="btn" style="background-color: #64adfb;" href="{{ route('users.create') }}">Create New
+                                User</a>
+                        @endcan
+                        <a class="btn" style="background-color: #64adfb;" href="{{ route('leave-mission.status') }}">Leave
+                            Status</a>
+                        <a class="btn" style="background-color: #64adfb;"
+                            href="{{ route('mission-leave.status') }}">Mission Status</a>
+
+                    </div>
+                </h4>
+            </div>
         </div>
     </div>
-</div>
+    @if ($message = Session::get('success'))
+        <div class="alert alert-success my-2">
+            <p>{{ $message }}</p>
+        </div>
+    @endif
+    <table class="table table-bordered table-hover table-striped">
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Roles</th>
+            <th>Department</th>
+            <th width="280px">Action</th>
+        </tr>
+        @foreach ($data as $key => $user)
+            <tr>
+                <td>{{ $user->name }}</td>
+                <td>{{ $user->email }}</td>
 
+                <td>
+                    @if (!empty($user->getRoleNames()))
+                        @foreach ($user->getRoleNames() as $v)
+                            <label class="badge badge-secondary text-dark">{{ $v }}</label>
+                        @endforeach
+                    @endif
+                </td>
+                <td>{{ $user->department ? $user->department->name : '' }}</td>
 
-@if ($message = Session::get('success'))
-<div class="alert alert-success my-2">
-  <p>{{ $message }}</p>
-</div>
-@endif
+                <td>
+                    <a class="btn btn-info" href="{{ route('users.show', $user->id) }}">Show</a>
+                    @can('user-edit')
+                        <a class="btn btn-primary" href="{{ route('users.edit', $user->id) }}">Edit</a>
+                    @endcan
 
-
-<table class="table table-bordered table-hover table-striped">
- <tr>
-   <th>Name</th>
-   <th>Email</th>
-   <th>Roles</th>
-   <th>Department</th>
-   <th width="280px">Action</th>
- </tr>
- @foreach ($data as $key => $user)
-  <tr>
-    <td>{{ $user->name }}</td>
-    <td>{{ $user->email }}</td>
-
-    <td>
-      @if(!empty($user->getRoleNames()))
-        @foreach($user->getRoleNames() as $v)
-           <label class="badge badge-secondary text-dark">{{ $v }}</label>
+                    @csrf
+                    @can('user-delete')
+                        <form action="{{ route('users.destroy', $user->id) }}" method="POST" style="display: inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger delete-user-btn"
+                                data-user-id="{{ $user->id }}">Delete</button>
+                        </form>
+                    @endcan
+                </td>
+            </tr>
         @endforeach
-      @endif
-    </td>
-    <td>{{ $user->department ? $user->department->name : '' }}</td>
+    </table>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const deleteBtns = document.querySelectorAll('.delete-user-btn');
 
-    <td>
-       <a class="btn btn-info" href="{{ route('users.show',$user->id) }}">Show</a>
-        @can('user-edit')
-        <a class="btn btn-primary" href="{{ route('users.edit',$user->id) }}">Edit</a>
-        @endcan
+            deleteBtns.forEach(btn => {
+                btn.addEventListener('click', function(event) {
+                    event.preventDefault();
 
+                    const userId = this.dataset.userId;
 
-        @csrf
-        @method('DELETE')
-        @can('user-delete')
-        <a class="btn btn-success" href="{{ route('users.destroy',$user->id) }}"> Delete</a>
-        @endcan
-    </td>
-  </tr>
- @endforeach
-</table>
-@endsection 
+                    Swal.fire({
+                        title: 'Are you sure you want to delete this user?',
+                        text: "This action can't be undone!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, delete it!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            const form = this.closest('form');
+                            form.submit();
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+@endsection

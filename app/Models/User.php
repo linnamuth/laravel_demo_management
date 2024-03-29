@@ -4,9 +4,12 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Contracts\Role;
+use Spatie\Permission\Models\Role as ModelsRole;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
@@ -23,7 +26,7 @@ class User extends Authenticatable
         'email',
         'password',
         'department_id',
-        'role_id'
+        'role_id',
     ];
 
     /**
@@ -48,4 +51,15 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Department::class);
     }
+    public function isAdmin()
+    {
+        return $this->role_id === 1; // Assuming 1 is the role ID for admins
+    }
+   public function role(): BelongsTo
+    {
+        return $this->belongsTo(ModelsRole::class);
+    }
+   
+    
+    
 }

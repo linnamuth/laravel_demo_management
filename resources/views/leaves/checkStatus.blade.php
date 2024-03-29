@@ -2,10 +2,18 @@
 
 @section('content')
 <div class="container">
-    <h1>Leave and Mission Requests Status</h1>
+    <div class="justify-content-between d-flex">
 
-    @if ($leaveMissions->isEmpty())
-        <p>No leave or mission requests found.</p>
+        <h4>Leave Requests Status</h4>
+        <div class="pull-right">
+            <a class="btn btn-primary" href="{{ route('users.index') }}" style="background-color: #007bff; color: #fff; border-color: #007bff; padding: 8px 20px; border-radius: 5px; text-decoration: none;">
+                Back
+            </a>
+        </div>
+    </div>
+
+    @if ($leaveRequests->isEmpty())
+        <p>No leave requests found.</p>
     @else
         <div class="table-container">
             <table class="table">
@@ -19,18 +27,21 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($leaveMissions as $leaveMission)
+                    @foreach ($leaveRequests as $leaveRequest)
                         <tr>
-                            <td>{{ ucfirst($leaveMission->type) }}</td>
-                            <td>{{ $leaveMission->start_date }}</td>
-                            <td>{{ $leaveMission->end_date }}</td>
-                            <td>{{ $leaveMission->reason }}</td>
-                            <td>{{ $leaveMission->status }}</td>
+                            <td>{{ ucfirst($leaveRequest->type) }}</td>
+                            <td>{{ $leaveRequest->start_date }}</td>
+                            <td>{{ $leaveRequest->end_date }}</td>
+                            <td>{{ $leaveRequest->reason }}</td>
+                            <td style="color: {{ $leaveRequest->status === 'approved' ? 'green' : ($leaveRequest->status === 'rejected' ? 'red' : 'orange') }}">
+                                {{ ucfirst($leaveRequest->status) }}
+                            </td>                        
                         </tr>
                     @endforeach
                 </tbody>
             </table>
         </div>
+        
     @endif
 </div>
 @endsection

@@ -9,16 +9,23 @@ use Illuminate\Support\Facades\Auth;
 
 class MissionControlller extends Controller
 {
-    function __construct()
-    {
-        $this->middleware(['permission:mission-list|mission-create|mission-edit|mission-delete'], ['only' => ['index', 'show']]);
-        $this->middleware(['permission:mission-create'], ['only' => ['create', 'store']]);
-        $this->middleware(['permission:mission-edit'], ['only' => ['edit', 'update']]);
-        $this->middleware(['permission:mission-delete'], ['only' => ['destroy']]);
-    }
+    // function __construct()
+    // {
+    //     $this->middleware(['permission:mission-list|mission-create|mission-edit|mission-delete'], ['only' => ['index', 'show']]);
+    //     $this->middleware(['permission:mission-create'], ['only' => ['create', 'store']]);
+    //     $this->middleware(['permission:mission-edit'], ['only' => ['edit', 'update']]);
+    //     $this->middleware(['permission:mission-delete'], ['only' => ['destroy']]);
+    // }
     public function index()
     {
-        $missionRequests = MissionLeave::latest()->paginate(50);
+        $isAdmin = Auth::user()->isAdmin();
+    
+        if ($isAdmin) {
+            $missionRequests = MissionLeave::latest()->paginate(50);
+        } else {
+            $missionRequests = MissionLeave::where('user_id', Auth::id())->latest()->paginate(50);
+        }
+    
         return view('missions.index', compact('missionRequests'));
     }
 
@@ -60,7 +67,6 @@ class MissionControlller extends Controller
 
     public function reject(Request $request, $id)
     {
-        // Find the mission request by ID
         $missionRequest = MissionLeave::findOrFail($id);
 
         $missionRequest->status = 'rejected';
@@ -68,5 +74,6 @@ class MissionControlller extends Controller
 
         return redirect()->back()->with('success', 'Mission request rejected successfully.');
     }
+    
     
 }

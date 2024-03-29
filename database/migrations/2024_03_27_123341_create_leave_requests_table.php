@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('leave_requests', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id'); // Foreign key referencing the Users table
             $table->string('type'); // 'leave' or 'mission'
             $table->date('start_date');
             $table->date('end_date');
