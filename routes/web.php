@@ -103,6 +103,7 @@ Route::get('admin/permissions', [AdminController::class, 'permissions'])->name('
 Route::get('admin/settings', [AdminController::class, 'settings'])->name('admin.settings');
 
 
+
 });
 
 require __DIR__.'/auth.php';

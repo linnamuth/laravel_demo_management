@@ -65,12 +65,14 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('password')
         ]);
 
-        $role = Role::create(['name' => 'Admin']);
+        // Create Admin role if not exists
+        $role = Role::firstOrCreate(['name' => 'Admin']);
 
-        $permissions = Permission::pluck('id', 'id')->all();
-
+        $permissions = Permission::pluck('id')->all();
         $role->syncPermissions($permissions);
 
-        $user->assignRole([$role->id]);
+        $user->assignRole($role);
+
+        $user->update(['role_id' => 1]);
     }
 }
