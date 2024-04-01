@@ -4,15 +4,22 @@
 
 @section('content')
 <div class="container">
-    <h4>Create Department</h4>
+    <div class="d-flex justify-content-between">
+        <h4>Create Department</h4>
+        <a class="btn btn-primary" href="{{ route('departments.index') }}" style="background-color: #007bff; color: #fff; border-color: #007bff; padding: 8px 20px; border-radius: 40px; text-decoration: none;">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
+    </div>
+    
     <form method="POST" action="{{ route('departments.store') }}">
         @csrf
-        <div class="form-group">
+        <div class="form-group mt-2">
             <label for="name">Name</label>
-            <input type="text" class="form-control" id="name" name="name" placeholder="Enter department name">
+            <input type="text" class="form-controls mt-2" id="name" name="name" placeholder="Enter department name">
         </div>
-        <!-- Add more form fields as needed -->
-        <button type="submit" class="btn btn-primary w-100 mt-3">Submit</button>
+        <div class="col-md-12 text-center">
+                <button type="submit" class="btn w-100 create-user-btn mt-3" style="background-color: #3b94f3; color: white;">Submit</button>
+        </div>    
     </form>
 </div>
 @endsection

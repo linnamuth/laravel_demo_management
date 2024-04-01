@@ -6,7 +6,7 @@
             <div class="pull-left">
                 <h4>Role Management
                     <div class="float-end">
-                            <a class="btn" style="background-color:#64adfb " href="{{ route('roles.create') }}"> Create New Role</a>
+                            <a class="btn" style="background-color:#3b94f3;color:white " href="{{ route('roles.create') }}"> Create New Role</a>
                     </div>
                 </h4>
             </div>

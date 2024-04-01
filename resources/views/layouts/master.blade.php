@@ -8,7 +8,10 @@
     <title>Laravel Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-  
+        <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body>
    
@@ -31,14 +34,25 @@
                             <li><a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a></li>
                             <li><a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a></li>
                         @else
-                        @if(Auth::user()->role->name == "Admin")
-                        <li><a class="nav-link" href="{{ route('users.index') }}"><i class="bi bi-person"></i> Manage Users</a></li>
+    
+                    @if(Auth::user()->role->name == "Admin")
+                        <li><a class="nav-link" href="{{ route('dashboards.index') }}"><i class="bi bi-shield-fill"></i> Dashboard</a></li>
+
                         <li><a class="nav-link" href="{{ route('roles.index') }}"><i class="bi bi-shield-fill"></i> Manage Role</a></li>
                         <li><a class="nav-link" href="{{ route('departments.index') }}"><i class="bi bi-building"></i> Department</a></li>
-                            
-                        @endif
                         <li><a class="nav-link" href="{{ route('leaves.index') }}"><i class="bi bi-calendar-plus"></i> Request Leave</a></li>
-                        <li><a class="nav-link" href="{{ route('missions.index') }}"><i class="bi bi-calendar-plus"></i>Mission Request</a></li>
+                        <li><a class="nav-link" href="{{ route('missions.index') }}"><i class="bi bi-calendar-plus"></i> Mission Request</a></li>
+                                        <li><a class="nav-link" href="{{ route('users.index') }}"><i class="bi bi-person"></i>Users</a></li>
+
+                    @elseif(Auth::user()->role->name == "team leader" || Auth::user()->role->name == "hr manager" || Auth::user()->role->name == "cfo")
+                        <li><a class="nav-link" href="{{ route('leaves.index') }}"><i class="bi bi-calendar-plus"></i> Request Leave</a></li>
+                        <li><a class="nav-link" href="{{ route('missions.index') }}"><i class="bi bi-calendar-plus"></i> Mission Request</a></li>
+
+                    @else
+                        <li><a class="nav-link" href="{{ route('leaves.index') }}"><i class="bi bi-calendar-plus"></i> Request Leave</a></li>
+                         <li><a class="nav-link" href="{{ route('missions.index') }}"><i class="bi bi-calendar-plus"></i> Mission Request</a></li>
+
+                    @endif
                 
                             <li class="ms-3 nav-item dropdown">
                                  
@@ -64,12 +78,32 @@
                         <div class="d-flex justify-content-between">
                             <h2>Management System</h2>
                             <h1 class="h2 mb-0 ls-tight"></h1>
-                            <div class="d-flex">
+                         <div class="d-flex">
+                        <div class="container mt-4">
+                        <div class="dropdown">
+                            <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="bi bi-person"></i> {{ Auth::user()->name }} <span class="caret"></span>
+                            </button>
 
-                                <a id="navbarDropdown"  href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    {{ Auth::user()->name }} <span class="caret"></span>
+
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                 <a class="dropdown-item" href="{{ route('profile.edit') }}">
+                                    {{ __('Profile') }}
                                 </a>
-                            </div>   
+
+                                <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    {{ __('Logout') }}
+                                </a>
+
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                    @csrf
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    </div>
+
                         </div>                       
                     </div>
                     <ul class="nav nav-tabs mt-4 overflow-x border-0">
@@ -80,8 +114,8 @@
         </header>
         <main class="py-6 bg-surface-secondary">
             <div class="container-fluid">
-                <div class="row g-6 mb-6">
-                    <div class="col-xl-3 col-sm-6 col-12">
+                {{-- <div class="row g-6 mb-6"> --}}
+                    {{-- <div class="col-xl-3 col-sm-6 col-12">
                         <div class="card shadow border-0">
                             <div class="card-body">
                                 <div class="row">
@@ -98,8 +132,8 @@
                                
                             </div>
                         </div>
-                    </div>
-                    <div class="col-xl-3 col-sm-6 col-12">
+                    </div> --}}
+                    {{-- <div class="col-xl-3 col-sm-6 col-12">
                         <div class="card shadow border-0">
                             <div class="card-body">
                                 <div class="row">
@@ -116,8 +150,8 @@
                               
                             </div>
                         </div>
-                    </div>
-                    <div class="col-xl-3 col-sm-6 col-12">
+                    </div> --}}
+                    {{-- <div class="col-xl-3 col-sm-6 col-12">
                         <div class="card shadow border-0">
                             <div class="card-body">
                                 <div class="row">
@@ -133,8 +167,8 @@
                                 </div>
                              
                             </div>
-                        </div>
-                    </div>
+                        </div> --}}
+                    {{-- </div>
                     <div class="col-xl-3 col-sm-6 col-12">
                         <div class="card shadow border-0">
                             <div class="card-body">
@@ -152,8 +186,8 @@
                                
                             </div>
                         </div>
-                    </div>
-            </div>
+                    </div> --}}
+            {{-- </div> --}}
             <div id="app">
                 <main class="py-4">
                     <div class="container">
@@ -172,9 +206,25 @@
 /* Utility and component-centric Design System based on Bootstrap for fast, responsive UI development */
 /* URL: https://github.com/webpixels/css */
 
-@import url(https://unpkg.com/@webpixels/css@1.1.5/dist/index.css);
 
-/* Bootstrap Icons */
-@import url("https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.4.0/font/bootstrap-icons.min.css");
 
 </style>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+      var navLinks = document.querySelectorAll('.navbar-nav .nav-link');
+
+      navLinks.forEach(function(navLink) {
+        navLink.addEventListener('click', function(event) {
+          navLinks.forEach(link => link.classList.remove('active'));
+          navLink.classList.add('active');
+        });
+
+        if (window.location.href === navLink.href) {
+          navLinks.forEach(link => link.classList.remove('active'));
+          navLink.classList.add('active');
+        }
+      });
+    });
+</script>
+
+

@@ -10,7 +10,9 @@ class MissionLeave extends Model
     use HasFactory;
     protected $fillable = [
         'purpose',
-        'user_id'
+        'user_id',
+        'leader_approval',
+        'ceo_approval'
         // Add other fillable fields here as needed
     ];
     public function user()

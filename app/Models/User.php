@@ -53,13 +53,29 @@ class User extends Authenticatable
     }
     public function isAdmin()
     {
-        return $this->role_id === 1; // Assuming 1 is the role ID for admins
+        return $this->role->name === 'Admin';
     }
    public function role(): BelongsTo
     {
         return $this->belongsTo(ModelsRole::class);
     }
-   
+    public function isTeamLeader(): bool
+    {
+        
+        return $this->role->name === 'team leader';
+    }
+    public function isHRManager(): bool
+    {
+        return $this->role->name === 'hr manager';
+    }
+    public function isCFO(): bool
+    {
+        return $this->role->name === 'cfo';
+    }
+    public function isCEO(): bool
+    {
+        return $this->role->name === 'ceo';
+    }
     
     
 }

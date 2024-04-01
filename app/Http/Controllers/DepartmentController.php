@@ -33,8 +33,9 @@ class DepartmentController extends Controller
 
         Department::create([
             'name' => $request->name,
-            // Assign values for other fields if needed
+           
         ]);
+    
 
         return redirect()->route('departments.index')->with('success', 'Department created successfully.');
     }

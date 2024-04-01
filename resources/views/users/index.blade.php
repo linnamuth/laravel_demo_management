@@ -5,17 +5,17 @@
         <div class="col-lg-12 margin-tb mb-4">
             <div class="pull-left">
                 <h4>Users Management
-
-                    <div class="float-end">
-                        @can('user-create')
-                            <a class="btn" style="background-color: #64adfb;" href="{{ route('users.create') }}">Create New
-                                User</a>
-                        @endcan
-                        <a class="btn" style="background-color: #64adfb;" href="{{ route('leave-mission.status') }}">Leave
-                            Status</a>
-                        <a class="btn" style="background-color: #64adfb;"
-                            href="{{ route('mission-leave.status') }}">Mission Status</a>
-
+                   <div class="float-end">
+                        <a class="btn" style="background-color: #3b94f3; color: white;" href="{{ route('users.create') }}">Create New User</a>
+                        @if(Auth::check() && Auth::user()->role)
+                            @php
+                                $userRole = Auth::user()->role->name;
+                            @endphp
+                            @if($userRole !== 'hr manager' && $userRole !== 'cfo' && $userRole !== 'team leader')
+                                <a class="btn" style="background-color: #3b94f3; color: white;" href="{{ route('leave-mission.status') }}">Leave Status</a>
+                                <a class="btn" style="background-color: #3b94f3; color: white;" href="{{ route('mission-leave.status') }}">Mission Status</a>
+                            @endif
+                        @endif
                     </div>
                 </h4>
             </div>
@@ -38,7 +38,6 @@
             <tr>
                 <td>{{ $user->name }}</td>
                 <td>{{ $user->email }}</td>
-
                 <td>
                     @if (!empty($user->getRoleNames()))
                         @foreach ($user->getRoleNames() as $v)
@@ -53,7 +52,6 @@
                     @can('user-edit')
                         <a class="btn btn-primary" href="{{ route('users.edit', $user->id) }}">Edit</a>
                     @endcan
-
                     @csrf
                     @can('user-delete')
                         <form action="{{ route('users.destroy', $user->id) }}" method="POST" style="display: inline;">

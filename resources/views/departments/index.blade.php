@@ -7,20 +7,14 @@
             <div class="pull-left">
                 <h4>Departments
                     <div class="float-end">
-                        {{-- @can('role-create') --}}
-                        <a class="btn" style="background-color: #64adfb;"  href="{{ route('departments.create') }}">Create Department</a>
-                        {{-- @endcan --}}
+                        <a class="btn" style="background-color: #3b94f3;color: white;"  href="{{ route('departments.create') }}">Create Department</a>
                     </div>
-                </h4>
+                </h4>                   
+
             </div>
         </div>
     </div>
-    {{-- @if ($message = Session::get('success'))
-        <div class="alert alert-success">
-            <p>{{ $message }}</p>
-        </div>
-    @endif --}}
-    @if ($departments->count() > 0)
+   
     <table class="table">
         <thead>
             <tr>
@@ -30,26 +24,30 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($departments as $department)
+           @if ($departments->count() == 0)
                 <tr>
-                    <td>{{ $department->id }}</td>
-                    <td>{{ $department->name }}</td>
-                    <td>
-                        <a href="{{ route('departments.edit', $department->id) }}" class="btn btn-primary">Edit</a>
-                        <form action="{{ route('departments.destroy', $department->id) }}" method="POST" style="display: inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger delete-department-btn">Delete</button>
-                        </form>
-                        
-                    </td>
+                    <td colspan="5" class="text-center">No department created yet</td>
                 </tr>
-            @endforeach
+            @else
+                @foreach ($departments as $department)
+                    <tr>
+                        <td>{{ $department->id }}</td>
+                        <td>{{ $department->name }}</td>
+                        <td>
+                            <a href="{{ route('departments.edit', $department->id) }}" class="btn btn-primary">Edit</a>
+                            <form action="{{ route('departments.destroy', $department->id) }}" method="POST" style="display: inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger delete-department-btn">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                @endforeach
+            @endif
+
         </tbody>
     </table>
-    @else
-        <p>There are currently no pending mission requests</p>
-    @endif
+    
 </div>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>

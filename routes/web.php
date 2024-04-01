@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\dashboardController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\LeaveRequestController;
 use App\Http\Controllers\MissionController;
@@ -43,6 +44,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('leaves', LeaveRequestController::class);
     Route::resource('missions', MissionControlller::class);
     Route::resource('departments', DepartmentController::class);
+    Route::resource('dashboards', dashboardController::class);
+
 
 
     Route::get('leave-request/create', [LeaveRequestController::class, 'create'])->name('leave-request.create');
@@ -75,10 +78,10 @@ Route::get('mission-requests', [MissionControlller::class, 'index'])->name('miss
 Route::get('mission-requests/create', [MissionControlller::class, 'create'])->name('mission_requests.create');
 Route::post('mission-requests', [MissionControlller::class, 'store'])->name('mission_requests.store');
 
-Route::post('/mission-requests/{id}/approve', [MissionControlller::class, 'approve'])
-    ->name('mission-requests.approve');
-Route::post('/mission-requests/{id}/reject', [MissionControlller::class, 'reject'])
-->name('mission-requests.reject');
+Route::post('/mission-leaves/{id}/approve', [MissionControlller::class, 'approveMission'])
+    ->name('mission-leaves.approves');
+Route::post('/mission-leaves/{id}/reject', [MissionControlller::class, 'reject'])
+->name('mission-leaves.reject');
 
 
 // // Routes for workflow management

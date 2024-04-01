@@ -10,6 +10,8 @@ use Spatie\Permission\Models\Role;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
+
 
 class UserController extends Controller
 {
@@ -22,8 +24,13 @@ class UserController extends Controller
     // }
     public function index(Request $request)
     {
-        $data = User::latest()->paginate(5);
-        return view('users.index',compact('data'));
+        if ($request->user()->isAdmin()) {
+            $data = User::latest()->paginate(5);
+        } else {
+            $data = User::where('id', $request->user()->id)->paginate(5);
+        }
+        
+        return view('users.index', compact('data'));
     }
     
 
@@ -38,28 +45,28 @@ class UserController extends Controller
     
 
     public function store(Request $request)
-    {
-        $this->validate($request, [
-            'name' => 'required',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|same:confirm_password',
-            'role_id' => 'required',
-            'department_id' => 'required'
-        ]);
-    
-        $input = $request->all();
-        $input['password'] = Hash::make($input['password']);
-    
-        $role = Role::find($request->input('role_id')); // Find the role by ID
-        if (!$role) {
-            return redirect()->route('users.create')->with('error', 'Invalid role selected');
-        }
-    
-        $user = User::create($input);
-        $user->assignRole($role); 
-    
-        return redirect()->route('users.index')->with('success', 'User created successfully');
+{
+    $this->validate($request, [
+        'name' => 'required',
+        'email' => 'required|email|unique:users,email',
+        'password' => 'required|same:confirm_password',
+        'role_id' => 'required',
+        'department_id' => 'required'
+    ]);
+
+    $input = $request->all();
+    $input['password'] = Hash::make($input['password']);
+
+    $role = Role::find($request->input('role_id')); // Find the role by ID
+    if (!$role) {
+        return redirect()->route('users.create')->with('error', 'Invalid role selected');
     }
+
+    $user = User::create($input);
+    $user->assignRole($role);
+
+    return redirect()->route('users.create')->with('success', 'User created successfully');
+}
     
     
     public function show($id)
@@ -79,34 +86,38 @@ class UserController extends Controller
     
         return view('users.edit',compact('user','roles','userRole','departments'));
     }
-
     public function update(Request $request, $id)
-    {
-        $this->validate($request, [
-            'name' => 'required',
-            'email' => 'required|email|unique:users,email,'.$id,
-            'password' => 'same:confirm-password',
-            'roles' => 'nullable',
-            'department_id' => 'required'
+{
+    $this->validate($request, [
+        'name' => 'required',
+        'email' => 'required|email|unique:users,email,'.$id,
+        'role_id' => 'nullable|exists:roles,id',
+        'department_id' => 'required|exists:departments,id'
+    ]);
 
+    $input = $request->only(['name', 'email', 'department_id']);
+
+    if ($request->filled('password')) {
+        $this->validate($request, [
+            'password' => 'nullable|string|min:8|confirmed',
         ]);
-    
-        $input = $request->all();
-        if(!empty($input['password'])){ 
-            $input['password'] = Hash::make($input['password']);
-        }else{
-            $input = Arr::except($input,array('password'));    
-        }
-    
-        $user = User::find($id);
-        $user->update($input);
-        DB::table('model_has_roles')->where('model_id',$id)->delete();
-    
-        $user->assignRole($request->input('roles'));
-    
-        return redirect()->route('users.index')
-                        ->with('success','User updated successfully');
+        $input['password'] = Hash::make($request->input('password'));
     }
+    $user = User::findOrFail($id);
+    $user->update($input);
+
+    if ($request->has('role_id')) {
+        $role = Role::find($request->input('role_id'));
+        if ($role) {
+            $user->roles()->sync([$role->id]);
+                        $user->role_id = $role->id;
+            $user->save();
+        }
+    }
+
+    return redirect()->route('users.edit', $id)->with('success', 'User updated successfully');
+}
+
     
     public function destroy($id)
     {

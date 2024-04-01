@@ -26,8 +26,9 @@
         </div>
     @endif
 
-    <form action="{{ route('roles.update', $role->id) }}" method="PATCH">
-        @csrf
+    <form action="{{ route('roles.update', $role->id) }}" method="post">
+         @csrf
+        @method('PUT') 
         <div class="row">
             <div class="col-xs-12 mb-3">
                 <div class="form-group">

@@ -20,7 +20,7 @@ return new class extends Migration
             $table->text('reason');
             $table->string('duration');
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
-            $table->enum('days', ['morning', 'afternoon', 'day'])->default('day');
+            $table->enum('days', ['morning', 'afternoon', 'day'])->default('day')->nullable();
             $table->timestamps();
         
         });
