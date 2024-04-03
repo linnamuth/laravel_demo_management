@@ -12,7 +12,9 @@ class MissionLeave extends Model
         'purpose',
         'user_id',
         'leader_approval',
-        'ceo_approval'
+        'ceo_approval',
+        'hr_manager_approval',
+        'cfo_approval'
         // Add other fillable fields here as needed
     ];
     public function user()

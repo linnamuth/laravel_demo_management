@@ -11,10 +11,18 @@
                 <div class="card-body">
                     <h5 class="card-title" style="color: #3490dc; font-weight: bold;">Manage Users</h5>
                     <p class="card-text"></p>
-                    <div class="mt-3">
+                   @if(\Illuminate\Support\Facades\Auth::user()->isAdmin())
+                        <div class="mt-3">
+                            <a href="{{ route('dashboards.index') }}" class="btn btn-primary" style="background-color: #3490dc; border-color: #3490dc;padding:10px;border-radius:10px">Go to Users</a>
+                        </div>
+                    @else
+                        <div class="mt-3">
 
-                        <a href="{{ route('users.index') }}" class="btn btn-primary" style="background-color: #3490dc; border-color: #3490dc;padding:10px;border-radius:10px">Go to Users</a>
-                    </div>
+                        <a href="{{ route('leaves.index') }}" class="btn btn-primary" style="background-color: #3490dc; border-color: #3490dc;padding:10px;border-radius:10px">Go to Users</a>
+                        </div>
+
+                    @endif
+
                 </div>
             </div>
         </div>

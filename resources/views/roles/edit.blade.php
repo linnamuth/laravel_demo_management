@@ -1,6 +1,5 @@
 @extends('layouts.master')
 
-
 @section('content')
     <div class="row">
         <div class="col-lg-12 margin-tb">
@@ -37,24 +36,10 @@
                         placeholder="Name">
                 </div>
             </div>
-            <div class="col-xs-12 mb-3">
-                <div class="form-group">
-                    <strong>Permission:</strong>
-                    <br />
-                    @foreach ($permission as $value)
-                        <label>
-                            <input type="checkbox" @if (in_array($value->id, $rolePermissions)) checked @endif name="permission[]"
-                                value="{{ $value->id }}" class="name">
-                            {{ $value->name }}</label>
-                        <br />
-                    @endforeach
-                </div>
-            </div>
+            <!-- Removed permission section -->
             <div class="col-xs-12 mb-3 text-center">
                 <button type="submit" class="btn btn-primary w-100">Submit</button>
             </div>
         </div>
     </form>
-
-
 @endsection

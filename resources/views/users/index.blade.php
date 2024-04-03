@@ -6,16 +6,21 @@
             <div class="pull-left">
                 <h4>Users Management
                    <div class="float-end">
-                        <a class="btn" style="background-color: #3b94f3; color: white;" href="{{ route('users.create') }}">Create New User</a>
-                        @if(Auth::check() && Auth::user()->role)
+                       @if(Auth::check() && Auth::user()->role)
                             @php
                                 $userRole = Auth::user()->role->name;
                             @endphp
+
+                            {{-- @if($userRole != 'admin') --}}
+                                <a class="btn" style="background-color: #3b94f3; color: white;" href="{{ route('users.create') }}">Create New User</a>
+                            {{-- @endif --}}
+
                             @if($userRole !== 'hr manager' && $userRole !== 'cfo' && $userRole !== 'team leader')
                                 <a class="btn" style="background-color: #3b94f3; color: white;" href="{{ route('leave-mission.status') }}">Leave Status</a>
                                 <a class="btn" style="background-color: #3b94f3; color: white;" href="{{ route('mission-leave.status') }}">Mission Status</a>
                             @endif
                         @endif
+
                     </div>
                 </h4>
             </div>

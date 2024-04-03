@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Mission;
 use App\Models\MissionLeave;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -12,45 +13,59 @@ class MissionControlller extends Controller
     
     public function index()
     {
-        
-        $user = Auth::user();
-
-        if ($user->isAdmin() || $user->isTeamLeader() || $user->isHRManager() || $user->isCFO() || $user->isCEO()) {
-            $missionRequests = MissionLeave::latest()->paginate(50);
+        $user = auth()->user();
+    
+        if ($user->isAdmin()) {
+            $missionRequests = MissionLeave::latest('created_at')->get();
         } else {
-            $missionRequests = MissionLeave::where('user_id', $user->id)->latest()->paginate(50);
+            $departmentId = $user->department_id;
+                if ($user->isTeamLeader() || $user->isHRManager() || $user->isCFO() || $user->isCEO()) {
+                $missionRequests = MissionLeave::select('mission_leaves.*')
+                    ->join('users', 'mission_leaves.user_id', '=', 'users.id')
+                    ->where('users.department_id', $departmentId)
+                    ->latest('mission_leaves.created_at')
+                    ->get();
+            } else {
+                $missionRequests = MissionLeave::where('user_id', $user->id)
+                    ->latest('created_at')
+                    ->get();
+            }
         }
+    
         return view('missions.index', compact('missionRequests'));
     }
+    
     
 
     public function create()
     {
-        return view('missions.create');
+        $users = User::all();
+        return view('missions.create', compact('users'));
     }
     public function store(Request $request)
     {
         if (!Auth::check()) {
             return redirect()->route('login')->with('error', 'Please login to submit a mission request.');
         }
-    
-        $validatedData = $request->validate([
+            $validatedData = $request->validate([
             'purpose' => 'required|string',
             'status' => 'nullable|string',
-            'user_name' => 'nullable|string',
         ]);
+            $user = Auth::user();
+            if ($user->isAdmin()) {
+            $validatedData['user_id'] = $request->input('user_id');
+            $validatedData['user_name'] = User::findOrFail($validatedData['user_id'])->name;
+        } else {
+            $validatedData['user_id'] = $user->id;
+            $validatedData['user_name'] = $user->name;
+        }
     
         $validatedData['created_at'] = now();
-    
-        $user = Auth::user();
-    
-        $validatedData['user_id'] = $user->id;
-        $validatedData['user_name'] = $user->name;
-    
         MissionLeave::create($validatedData);
     
-        return redirect()->route('mission_requests.index')->with('success', 'Mission request submitted successfully.');
+        return redirect()->route('missions.index')->with('success', 'Mission request submitted successfully.');
     }
+    
     public function approveMission(Request $request, $id)
     {
         $missionRequest = MissionLeave::findOrFail($id);
@@ -77,16 +92,16 @@ class MissionControlller extends Controller
 
                 if ($currentUser->isCFO() || $currentUser->isTeamLeader() || $currentUser->isHRManager() || $currentUser->isCEO()) {
                     if ($currentUser->isTeamLeader()) {
-                        $request->update(['leader_approval' => 'approved']);
+                        $missionRequest->update(['leader_approval' => 'approved']);
                     } elseif ($currentUser->isHRManager()) {
-                        $request->update(['hr_manager_approval' => 'approved']);
+                        $missionRequest->update(['hr_manager_approval' => 'approved']);
                     } elseif ($currentUser->isCFO()) {
-                        $request->update(['cfo_approval' => 'approved']);
+                        $missionRequest->update(['cfo_approval' => 'approved']);
                     }
                     elseif ($currentUser->isCEO()) {
-                        $request->update(['ceo_approval' => 'approved']);
+                        $missionRequest->update(['ceo_approval' => 'approved']);
                     }
-                    if ($request->leader_approval === 'approved' && $request->hr_manager_approval === 'approved' && $request->cfo_approval === 'approved' && $request->ceo_approval === 'approved') {
+                    if ($missionRequest->leader_approval === 'approved' && $missionRequest->hr_manager_approval === 'approved' && $missionRequest->cfo_approval === 'approved' && $missionRequest->ceo_approval === 'approved') {
                         $request->update(['status' => 'approved']);
                     }
                 }
@@ -124,17 +139,17 @@ class MissionControlller extends Controller
 
                 if ($currentUser->isCFO() || $currentUser->isTeamLeader() || $currentUser->isHRManager() || $currentUser->isCEO()) {
                     if ($currentUser->isTeamLeader()) {
-                        $request->update(['leader_approval' => 'rejected']);
+                        $missionRequest->update(['leader_approval' => 'rejected']);
                     } elseif ($currentUser->isHRManager()) {
-                        $request->update(['hr_manager_approval' => 'rejected']);
+                        $missionRequest->update(['hr_manager_approval' => 'rejected']);
                     } elseif ($currentUser->isCFO()) {
-                        $request->update(['cfo_approval' => 'rejected']);
+                        $missionRequest->update(['cfo_approval' => 'rejected']);
                     }
                     elseif ($currentUser->isCEO()) {
-                        $request->update(['ceo_approval' => 'rejected']);
+                        $missionRequest->update(['ceo_approval' => 'rejected']);
                     }
-                    if ($request->leader_approval === 'rejected' && $request->hr_manager_approval === 'rejected' && $request->cfo_approval === 'rejected' && $request->ceo_approval === 'rejected') {
-                        $request->update(['status' => 'rejected']);
+                    if ($missionRequest->leader_approval === 'rejected' && $missionRequest->hr_manager_approval === 'rejected' && $missionRequest->cfo_approval === 'rejected' && $missionRequest->ceo_approval === 'rejected') {
+                        $missionRequest->update(['status' => 'rejected']);
                     }
                 }
                 return redirect()->back()->with('success', 'Request approved successfully.');

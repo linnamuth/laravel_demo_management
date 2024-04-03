@@ -13,12 +13,7 @@
         </div>
     </div>
 
-    {{-- @if ($message = Session::get('success'))
-        <div class="alert alert-success">
-            <p>{{ $message }}</p>
-        </div>
-    @endif --}}
-
+    {{-- Table to display roles --}}
     <table class="table table-striped table-hover">
         <tr>
             <th>Name</th>
@@ -40,6 +35,8 @@
             </tr>
         @endforeach
     </table>
+
+    {{-- Script for delete confirmation --}}
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -49,7 +46,7 @@
                 btn.addEventListener('click', function(event) {
                     event.preventDefault(); // Prevent default form submission
     
-                    const roleId = this.dataset.roleId; // Corrected variable name
+                    const roleId = this.dataset.roleId;
     
                     Swal.fire({
                         title: 'Are you sure you want to delete this role?',

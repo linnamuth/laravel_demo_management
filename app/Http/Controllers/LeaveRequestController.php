@@ -14,10 +14,21 @@ class LeaveRequestController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->isAdmin() || $user->isTeamLeader() || $user->isHRManager() || $user->isCFO()) {
-            $leaveRequests = LeaveRequest::latest()->paginate(50);
+        if ($user->isAdmin()) {
+            $leaveRequests = LeaveRequest::latest('created_at')->get();
         } else {
-            $leaveRequests = LeaveRequest::where('user_id', $user->id)->latest()->paginate(50);
+            $departmentId = $user->department_id;
+                if ($user->isTeamLeader() || $user->isHRManager() || $user->isCFO() || $user->isCEO()) {
+                $leaveRequests = LeaveRequest::select('leave_requests.*')
+                    ->join('users', 'leave_requests.user_id', '=', 'users.id')
+                    ->where('users.department_id', $departmentId)
+                    ->latest('leave_requests.created_at')
+                    ->get();
+            } else {
+                $leaveRequests = LeaveRequest::where('user_id', $user->id)
+                    ->latest('created_at')
+                    ->get();
+            }
         }
 
         return view('leaves.index', compact('leaveRequests'));
@@ -39,12 +50,9 @@ class LeaveRequestController extends Controller
         'days' => 'nullable|in:morning,afternoon,day', 
     ]);
 
-    // Check if the authenticated user is an admin
     if (Auth::user()->isAdmin()) {
-        // Retrieve the user ID for whom the leave is being applied
         $user_id = $request->input('user_id');
 
-        // Create the leave request for the specified user
         LeaveRequest::create([
             'type' => $request->type,
             'start_date' => $request->start_date,
@@ -57,7 +65,6 @@ class LeaveRequestController extends Controller
 
         return redirect()->route('leaves.create')->with('success', 'Leave request submitted successfully for the user.');
     } else {
-        // For non-admin users, apply leave normally for the authenticated user
         $user_id = Auth::id();
 
         LeaveRequest::create([
@@ -70,7 +77,7 @@ class LeaveRequestController extends Controller
             'user_id' => $user_id,
         ]);
 
-        return r('leaves.create')->with('success', 'Leave request submitted successfully.');
+        return redirect()->route('leaves.create')->with('success', 'Leave request submitted successfully.');
     }
 }
 
@@ -87,7 +94,7 @@ class LeaveRequestController extends Controller
                     $request->update(['team_leader_approval' => 'approved']);
                 } elseif ($currentUser->isHRManager()) {
                     $request->update(['hr_manager_approval' => 'approved']);
-                }
+                } 
 
                 if ($request->team_leader_approval === 'approved' && $request->hr_manager_approval === 'approved') {
                     $request->update(['status' => 'approved']);

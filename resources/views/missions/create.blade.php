@@ -26,7 +26,17 @@
                             <input type="text" name="purpose" id="purpose" class="form-control" required>
                         </div>
                         <input type="hidden" name="user_id" value="{{ Auth::id() }}">
-                        <input type="hidden" name="status" value="pending">                 
+                        <input type="hidden" name="status" value="pending"> 
+                        @if(Auth::user()->isAdmin())
+    <div class="form-group">
+        <label for="user_id">Select User:</label>
+        <select name="user_id" id="user_id" class="form-control">
+            @foreach($users as $user)
+            <option value="{{ $user->id }}">{{ $user->name }}</option>
+            @endforeach
+        </select>
+    </div>
+    @endif                
                         <button type="submit" class="btn btn-primary w-100 mt-3">Submit</button>
                     </form>
                 </div>

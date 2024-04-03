@@ -38,7 +38,7 @@
                 });
 
                 setTimeout(function() {
-                    window.location.href = "{{ route('users.index') }}";
+                    window.location.href = "{{ route('roles.index') }}";
                 }, 2000); 
             });
         </script>
@@ -53,23 +53,10 @@
                     <input type="text" name="name" class="form-controls" placeholder="Name">
                 </div>
             </div>
-            <div class="col-xs-12 col-sm-12 col-md-12">
-                <div class="form-group">
-                    <strong>Permission:</strong>
-                    <br />
-                    @foreach ($permission as $value)
-                        <label>
-                            <input type="checkbox" name="permission[]" value="{{ $value->id }}" class="name">
-                            {{ $value->name }}</label>
-                        <br />
-                    @endforeach
-                </div>
-            </div>
-             <div class="col-md-12 text-center">
+            <div class="col-md-12 text-center mt-3">
                 <button type="submit" class="btn w-100 create-user-btn" style="background-color: #3b94f3; color: white;">Submit</button>
             </div>
         </div>
     </form>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @endsection
