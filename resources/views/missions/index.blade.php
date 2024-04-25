@@ -26,8 +26,9 @@
             </div>
         </div>
     </div>
+    <div class="card">
 
-    <table class="table table-striped table-hover">
+    <table class="table ">
         <thead>
             <tr>
                 <th>ID</th>
@@ -40,6 +41,7 @@
             </tr>
         </thead>
         <tbody>
+
             @if ($missionRequests->isEmpty())
                 <tr>
                     <td colspan="5" class="text-center">There are currently no pending mission requests</td>
@@ -168,4 +170,5 @@
             @endif
         </tbody>
     </table>
+    </div>
 @endsection

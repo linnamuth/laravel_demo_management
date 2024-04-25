@@ -12,9 +12,8 @@
             </div>
         </div>
     </div>
-
-    {{-- Table to display roles --}}
-    <table class="table table-striped table-hover">
+    <div class="card">
+    <table class="table">
         <tr>
             <th>Name</th>
             <th width="280px">Action</th>
@@ -26,7 +25,7 @@
                     <form action="{{ route('roles.destroy', $role->id) }}" method="POST">
                         <a class="btn btn-info" href="{{ route('roles.show', $role->id) }}">Show</a>
                         <a class="btn btn-primary" href="{{ route('roles.edit', $role->id) }}">Edit</a>
-                
+
                         @csrf
                         @method('DELETE')
                         <button type="button" class="btn btn-danger delete-role-btn" data-role-id="{{ $role->id }}">Delete</button>
@@ -35,19 +34,20 @@
             </tr>
         @endforeach
     </table>
+    </div>
 
     {{-- Script for delete confirmation --}}
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const deleteBtns = document.querySelectorAll('.delete-role-btn');
-    
+
             deleteBtns.forEach(btn => {
                 btn.addEventListener('click', function(event) {
                     event.preventDefault(); // Prevent default form submission
-    
+
                     const roleId = this.dataset.roleId;
-    
+
                     Swal.fire({
                         title: 'Are you sure you want to delete this role?',
                         text: "This action can't be undone!",

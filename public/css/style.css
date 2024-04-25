@@ -35,3 +35,6 @@
 .navbar-vertical .navbar-nav .nav-link.active{
     border-radius:40px;
 }
+.select2-container--default .select2-selection--multiple {
+    height: 45px;
+}

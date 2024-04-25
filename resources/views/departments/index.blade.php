@@ -9,12 +9,12 @@
                     <div class="float-end">
                         <a class="btn" style="background-color: #3b94f3;color: white;"  href="{{ route('departments.create') }}">Create Department</a>
                     </div>
-                </h4>                   
+                </h4>
 
             </div>
         </div>
     </div>
-   
+    <div class="card">
     <table class="table">
         <thead>
             <tr>
@@ -47,7 +47,8 @@
 
         </tbody>
     </table>
-    
+    </div>
+
 </div>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>

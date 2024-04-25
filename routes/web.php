@@ -45,6 +45,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('missions', MissionControlller::class);
     Route::resource('departments', DepartmentController::class);
     Route::resource('dashboards', dashboardController::class);
+    Route::resource('workflows', WorkflowController::class);
+
 
 
 
@@ -60,7 +62,8 @@ Route::middleware('auth')->group(function () {
     Route::get('mission-request/status', [StatusRequestController::class, 'statusMissionRequest'])->name('mission-leave.status');
 
 
-    Route::post('/leave-requests/{id}/approve', [LeaveRequestController::class, 'approves'])->name('leave-requests.approve');
+    Route::post('/leave-requests/{id}/approve', [LeaveRequestController::class, 'approves'])
+    ->name('leave-requests.approve');
     Route::post('/leave-requests/{id}/reject',  [LeaveRequestController::class, 'reject'])->name('leave-requests.reject');
 
     // Routes for Departments
@@ -100,6 +103,16 @@ Route::middleware('auth')->group(function () {
     Route::get('admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('admin/permissions', [AdminController::class, 'permissions'])->name('admin.permissions');
     Route::get('admin/settings', [AdminController::class, 'settings'])->name('admin.settings');
+
+    Route::get('workflows', [WorkflowController::class, 'index'])->name('workflows.index');
+    Route::get('workflows/create', [WorkflowController::class, 'create'])->name('workflows.create');
+    Route::post('workflows', [WorkflowController::class, 'store'])->name('workflows.store');
+    Route::get('workflows/{id}/edit', [WorkflowController::class, 'edit'])->name('workflows.edit');
+    Route::put('workflows/{id}/update', [WorkflowController::class, 'update'])->name('workflows.update');
+    Route::delete('workflows/{id}', [WorkflowController::class, 'destroy'])->name('workflows.destroy');
+
+
+
 });
 
 require __DIR__ . '/auth.php';

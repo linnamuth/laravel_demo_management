@@ -12,6 +12,7 @@ class RoleController extends Controller
     public function index(Request $request)
     {
         $roles = Role::orderBy('id', 'DESC')->paginate(5);
+        
         return view('roles.index', compact('roles'));
     }
 
@@ -25,9 +26,9 @@ class RoleController extends Controller
         $this->validate($request, [
             'name' => 'required|unique:roles,name'
         ]);
-    
+
         $role = Role::create(['name' => $request->input('name')]);
-    
+
         return redirect()->route('roles.create')->with('success', 'Role created successfully');
     }
 

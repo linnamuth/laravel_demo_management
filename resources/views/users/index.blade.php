@@ -1,37 +1,29 @@
 @extends('layouts.master')
 
 @section('content')
-    <div class="row">
-        <div class="col-lg-12 margin-tb mb-4">
-            <div class="pull-left">
-                <h4>Users Management
-                   <div class="float-end">
-                       @if(Auth::check() && Auth::user()->role)
-                            @php
-                                $userRole = Auth::user()->role->name;
-                            @endphp
+<div class="row">
+    <div class="col-lg-12 margin-tb mb-4">
+        <div class="pull-left">
+            <h4>Users Management
+               <div class="float-end">
+                            <a class="btn" style="background-color: #3b94f3; color: white;" href="{{ route('users.create') }}">Create New User</a>
 
-                            {{-- @if($userRole != 'admin') --}}
-                                <a class="btn" style="background-color: #3b94f3; color: white;" href="{{ route('users.create') }}">Create New User</a>
-                            {{-- @endif --}}
+                            <a class="btn" style="background-color: #3b94f3; color: white;" href="{{ route('leave-mission.status') }}">Leave Status</a>
+                            <a class="btn" style="background-color: #3b94f3; color: white;" href="{{ route('mission-leave.status') }}">Mission Status</a>
 
-                            @if($userRole !== 'hr manager' && $userRole !== 'cfo' && $userRole !== 'team leader')
-                                <a class="btn" style="background-color: #3b94f3; color: white;" href="{{ route('leave-mission.status') }}">Leave Status</a>
-                                <a class="btn" style="background-color: #3b94f3; color: white;" href="{{ route('mission-leave.status') }}">Mission Status</a>
-                            @endif
-                        @endif
-
-                    </div>
-                </h4>
-            </div>
+                </div>
+            </h4>
         </div>
     </div>
+</div>
+<div class="card">
+
     @if ($message = Session::get('success'))
         <div class="alert alert-success my-2">
             <p>{{ $message }}</p>
         </div>
     @endif
-    <table class="table table-bordered table-hover table-striped">
+    <table class="table">
         <tr>
             <th>Name</th>
             <th>Email</th>
@@ -50,22 +42,28 @@
                         @endforeach
                     @endif
                 </td>
-                <td>{{ $user->department ? $user->department->name : '' }}</td>
+                <td>
+                    @if($user->departments && $user->departments->isNotEmpty())
+                        @foreach($user->departments as $department)
+                            {{ $department->name }}
+                            @if(!$loop->last)
+                                ,
+                            @endif
+                        @endforeach
+                    
+                    @endif
+                </td>
 
                 <td>
                     <a class="btn btn-info" href="{{ route('users.show', $user->id) }}">Show</a>
-                    @can('user-edit')
                         <a class="btn btn-primary" href="{{ route('users.edit', $user->id) }}">Edit</a>
-                    @endcan
                     @csrf
-                    @can('user-delete')
                         <form action="{{ route('users.destroy', $user->id) }}" method="POST" style="display: inline;">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger delete-user-btn"
                                 data-user-id="{{ $user->id }}">Delete</button>
                         </form>
-                    @endcan
                 </td>
             </tr>
         @endforeach
@@ -99,4 +97,5 @@
             });
         });
     </script>
+</div>
 @endsection

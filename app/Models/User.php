@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Spatie\Permission\Contracts\Role;
+use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Role as ModelsRole;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -53,29 +53,55 @@ class User extends Authenticatable
     }
     public function isAdmin()
     {
-        return $this->role->name === 'Admin';
+        return $this->roles()->where('name', 'Admin')->exists();
     }
-   public function role(): BelongsTo
+
+
+    // public function isTeamLeader(): bool
+    // {
+
+    //     return $this->roles()->where('name', 'team leader')->exists();
+    // }
+    // public function isHRManager(): bool
+    // {
+    //     return $this->roles()->where('name', 'hr manager')->exists();
+    // }
+    // public function isCFO(): bool
+    // {
+    //     return $this->roles()->where('name', 'cfo')->exists();
+    // }
+    // public function isCEO(): bool
+    // {
+    //     return $this->roles()->where('name', 'ceo')->exists();
+    // }
+
+
+
+    public function roles()
     {
-        return $this->belongsTo(ModelsRole::class);
+        return $this->belongsToMany(Role::class, 'user_roles');
     }
-    public function isTeamLeader(): bool
+
+    public function hasRole($role)
     {
-        
-        return $this->role->name === 'team leader';
+        return $this->role === $role;
     }
-    public function isHRManager(): bool
+
+    public function hasAnyRole(array $roleNames): bool
     {
-        return $this->role->name === 'hr manager';
+        return $this->roles()->whereIn('name', $roleNames)->exists();
     }
-    public function isCFO(): bool
+    // public function role()
+    // {
+    //     return $this->belongsTo(Role::class);
+    // }
+    public function departments()
     {
-        return $this->role->name === 'cfo';
+        return $this->belongsToMany(Department::class, 'user_departments');
     }
-    public function isCEO(): bool
+    public function role()
     {
-        return $this->role->name === 'ceo';
+        return $this->belongsTo(Role::class, 'role_id'); // 'role_id' is the foreign key
     }
-    
-    
+   
 }

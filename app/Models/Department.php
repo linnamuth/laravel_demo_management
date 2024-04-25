@@ -9,9 +9,18 @@ class Department extends Model
 {
     use HasFactory;
     protected $fillable = ['name'];
+    // public function users()
+    // {
+    //     return $this->hasMany(User::class);
+    // }
+    public function approvalRules()
+    {
+        return $this->hasMany(ApproveRoles::class);
+    }
     public function users()
     {
-        return $this->hasMany(User::class);
+        return $this->belongsToMany(User::class,'user_departments');
     }
+
 
 }

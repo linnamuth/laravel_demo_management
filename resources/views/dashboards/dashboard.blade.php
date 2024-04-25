@@ -30,7 +30,7 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col">
-                                <span class="h6 font-semibold text-muted text-sm d-block mb-2">Request Leaves</span>
+                                <span class="h6 font-semibold text-muted text-sm d-block mb-2">Leaves</span>
                                 <span class="h3 font-bold mb-0">{{ $requestLeaves->count() ?: 0 }}</span>
                             </div>
                             <div class="col-auto">
@@ -48,7 +48,7 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col">
-                                <span class="h6 font-semibold text-muted text-sm d-block mb-2">Mission Request</span>
+                                <span class="h6 font-semibold text-muted text-sm d-block mb-2">Missions</span>
                                 <span class="h3 font-bold mb-0">{{ $missionLeaves->count() ?: 0 }}</span>
                             </div>
                             <div class="col-auto">
@@ -81,7 +81,6 @@
                     </div>
                 </div>
         </div>
-        <div class="container">
 
             <div class="row my-2">
                 <div class="col-md-6 py-1">
@@ -99,8 +98,8 @@
                     </div>
                 </div>
             </div>
-                <h6>List Users</h6>
-                <table class="table table-bordered table-hover table-striped">
+                <div class="card">
+                <table class="table ">
                     <tr>
                         <th>Name</th>
                         <th>Email</th>
@@ -124,7 +123,7 @@
                         </tr>
                     @endforeach
                 </table>
-        </div>
+                </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 

@@ -41,36 +41,20 @@
                         <li><a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a></li>
                         <li><a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a></li>
                     @else
-                        
-                        @if (Auth::user()->role->name == 'Admin')
-                        <li><a class="nav-link" href="{{ route('dashboards.index') }}"><i class="bi bi-bar-chart"></i>
-                                Dashboard</a></li>
-                            <li><a class="nav-link" href="{{ route('users.index') }}"><i class="bi bi-person"></i>Users</a>
-                            </li>
+                    @if (Auth::user()->role_id == 1)
 
-                            <li><a class="nav-link" href="{{ route('roles.index') }}"><i class="bi bi-shield-fill"></i>
-                                    Manage Role</a></li>
-                            <li><a class="nav-link" href="{{ route('departments.index') }}"><i class="bi bi-building"></i>
-                                    Department</a></li>
-                            <li><a class="nav-link" href="{{ route('leaves.index') }}"><i class="bi bi-calendar-plus"></i>
-                                    Request Leave</a></li>
-                            <li><a class="nav-link" href="{{ route('missions.index') }}"><i
-                                        class="bi bi-calendar-plus"></i> Mission Request</a></li>
-                        @elseif(Auth::user()->role->name == 'team leader' ||
-                                Auth::user()->role->name == 'hr manager' ||
-                                Auth::user()->role->name == 'cfo')
-                            <li><a class="nav-link" href="{{ route('leaves.index') }}"><i class="bi bi-calendar-plus"></i>
-                                    Request Leave</a></li>
-                            <li><a class="nav-link" href="{{ route('missions.index') }}"><i
-                                        class="bi bi-calendar-plus"></i> Mission Request</a></li>
-                        @else
-                            <li><a class="nav-link" href="{{ route('leaves.index') }}"><i class="bi bi-calendar-plus"></i>
-                                    Request Leave</a></li>
-                            <li><a class="nav-link" href="{{ route('missions.index') }}"><i
-                                        class="bi bi-calendar-plus"></i> Mission Request</a></li>
-                        @endif
+                    <li><a class="nav-link" href="{{ route('dashboards.index') }}"><i class="bi bi-bar-chart"></i> Dashboard</a></li>
+                    <li><a class="nav-link" href="{{ route('workflows.index') }}"><i class="bi bi-gear"></i> Workflows</a></li>
+                    <li><a class="nav-link" href="{{ route('users.index') }}"><i class="bi bi-person"></i> Users</a></li>
+                    <li><a class="nav-link" href="{{ route('roles.index') }}"><i class="bi bi-shield-fill"></i> Manage Role</a></li>
+                    <li><a class="nav-link" href="{{ route('departments.index') }}"><i class="bi bi-building"></i> Departments</a></li>
+                    <li><a class="nav-link" href="{{ route('leaves.index') }}"><i class="bi bi-calendar-plus"></i> Request Leave</a></li>
+                    <li><a class="nav-link" href="{{ route('missions.index') }}"><i class="bi bi-calendar-plus"></i> Mission Request</a></li>
+                @else
+                    <li><a class="nav-link" href="{{ route('leaves.index') }}"><i class="bi bi-calendar-plus"></i> Request Leave</a></li>
+                    <li><a class="nav-link" href="{{ route('missions.index') }}"><i class="bi bi-calendar-plus"></i> Mission Request</a></li>
 
-
+                @endif
                         <li class="ms-3 nav-item dropdown">
 
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -135,7 +119,7 @@
         </header>
         <main class="py-6 bg-surface-secondary">
             <div class="container-fluid">
-               
+
                 <div id="app">
                     <main class="py-4">
                         <div class="container">

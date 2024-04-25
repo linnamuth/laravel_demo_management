@@ -8,10 +8,24 @@ use Illuminate\Database\Eloquent\Model;
 class LeaveRequest extends Model
 {
     use HasFactory;
-    protected $fillable = ['type', 'start_date', 'end_date', 'reason', 'status', 'duration', 'days','user_id','team_leader_approval','hr_manager_approval','cfo_approval','hr_reject','team_leader_reject','cfo_reject'];
-
+    protected $fillable = [
+        'user_id',
+        'department_id',
+        'type',
+        'start_date',
+        'end_date',
+        'reason',
+        'duration',
+        'status',
+        'is_approved',
+        'is_rejected',
+    ];
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+    public function approvals()
+    {
+        return $this->hasMany(LeaveRequestApprove::class, 'leave_request_id');  // Define relationship
     }
 }

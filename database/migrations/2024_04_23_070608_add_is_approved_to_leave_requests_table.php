@@ -12,10 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('leave_requests', function (Blueprint $table) {
-
-            $table->enum('team_leader_approval', ['pending', 'approved', 'rejected'])->default('pending');
-            $table->enum('hr_manager_approval', ['pending', 'approved', 'rejected'])->default('pending');
-
+            $table->boolean('is_approved')->default(false);
+            $table->boolean('is_rejected')->default(false);
         });
     }
 
@@ -25,8 +23,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('leave_requests', function (Blueprint $table) {
-            $table->dropColumn('team_leader_approved');
-            $table->dropColumn('hr_manager_approved');
+            $table->dropColumn('is_approved');
+            $table->dropColumn('is_rejected');
         });
     }
 };
